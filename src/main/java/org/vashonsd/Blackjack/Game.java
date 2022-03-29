@@ -1,5 +1,7 @@
 package org.vashonsd.Blackjack;
 
+import org.vashonsd.Utils.Cards.Hand;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,8 +19,13 @@ public class Game {
     }
 
     class Round{
-        public Round(){
-
+        public Round(int numPlayers){
+            Hand hand = new Hand(11, 2);
+            for(int i=0; i<numPlayers; i++){
+                hand.addCard(shoe.deal());
+                hand.addCard(shoe.deal());
+                players.get(i).addHand(hand);
+            }
         }
     }
 }
