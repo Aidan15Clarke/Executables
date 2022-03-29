@@ -1,5 +1,7 @@
 package org.vashonsd.Utils.Cards;
 
+import java.util.List;
+
 public class Card
 {
     // These constants represent the possible suits and
@@ -161,6 +163,4 @@ public class Card
         // combine those
         return rankString + suitString;
     }
-
-
 }

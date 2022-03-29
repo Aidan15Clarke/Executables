@@ -20,8 +20,12 @@ public class Hand {
         return "" + cards;
     }
 
-    public void takeCard(Card c) {
+    public void addCard(Card c) {
         cards.add(c);
+    }
+
+    public Card getCard(int n){
+        return cards.get(n);
     }
 
     public void resetHand() {
@@ -52,5 +56,4 @@ public class Hand {
     public void setStartingSize(int startingSize) {
         this.startingSize = startingSize;
     }
-
 }
