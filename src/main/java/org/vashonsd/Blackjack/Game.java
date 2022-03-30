@@ -16,6 +16,17 @@ public class Game {
         for(int i = 0; i<numPlayers+1; i++){
             players.add(new Player());
         }
+
+        playRound(numPlayers);
+    }
+
+    public void playRound(int numPlayers){
+        Round round = new Round(numPlayers);
+        for(int i=0; i<players.size(); i++){
+            System.out.println("Player: " + i+1);
+            System.out.print(players.get(i).hands.get(i).getCard(0) + " ");
+            System.out.println(players.get(i).hands.get(i).getCard(1));
+        }
     }
 
     class Round{
