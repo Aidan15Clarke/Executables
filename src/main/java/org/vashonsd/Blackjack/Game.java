@@ -4,6 +4,7 @@ import org.vashonsd.Utils.Cards.Hand;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Scanner;
 
 public class Game {
     Shoe shoe;
@@ -17,25 +18,75 @@ public class Game {
             players.add(new Player());
         }
 
-        playRound(numPlayers);
+        playRound(numDecks, numPlayers+1);
     }
 
-    public void playRound(int numPlayers){
+    public void playRound(int numDecks, int numPlayers){
         Round round = new Round(numPlayers);
-        for(int i=0; i<players.size(); i++){
-            System.out.println("Player: " + i+1);
-            System.out.print(players.get(i).hands.get(i).getCard(0) + " ");
-            System.out.println(players.get(i).hands.get(i).getCard(1));
+        boolean isPlaying = true;
+
+        while(isPlaying) {
+            round.printRound();
+            round.playHands();
         }
     }
 
     class Round{
         public Round(int numPlayers){
-            Hand hand = new Hand(11, 2);
             for(int i=0; i<numPlayers; i++){
-                hand.addCard(shoe.deal());
-                hand.addCard(shoe.deal());
-                players.get(i).addHand(hand);
+                players.get(i).addHand(createHand());
+            }
+        }
+
+        public Hand createHand(){
+            Hand hand = new Hand(11, 2);
+            hand.addCard(shoe.deal());
+            hand.addCard(shoe.deal());
+            return hand;
+        }
+
+        public void printRound(){
+            System.out.println("Dealer:\n" + players.get(0).hands.get(0).getCard(0) + " " + players.get(0).hands.get(0).getCard(1) + "\n");
+
+            for(int i=1; i<players.size(); i++){
+                System.out.print("Player: " + (i) + "\t");
+            }
+
+            System.out.println("");
+
+            for(int i=1; i<players.size(); i++){
+                System.out.print(players.get(i).hands.get(0).getCard(0) + " ");
+                System.out.print(players.get(i).hands.get(0).getCard(1));
+                System.out.print("   \t");
+            }
+
+            System.out.println("\n");
+        }
+
+        public void playHands(int numDecks){
+            Scanner input = new Scanner(System.in);
+            boolean isPlaying;
+
+            for(int i=1; i<players.size(); i++){
+                isPlaying = true;
+                while(isPlaying) {
+                    System.out.println("Player " + i + ":");
+                    System.out.println("1) Hit 2) Stand 3) Double 4) Split");
+                    int choice = input.nextInt();
+
+                    if(choice == 2){
+                        isPlaying = false;
+                        players.get(i).resetHands();
+                        break;
+                    }
+
+                    if(choice == 1){
+                        if(shoe.total.size() == 0){
+                            shoe.resetDecks(numDecks);
+                        }
+                    }
+                }
+                System.out.println("test");
             }
         }
     }
