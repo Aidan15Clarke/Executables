@@ -7,6 +7,7 @@ import java.util.List;
 
 public class Player {
     List<Hand> hands = new ArrayList<>();
+    int numHands = 0;
 
     public void addHand(Hand hand){
         hands.add(hand);

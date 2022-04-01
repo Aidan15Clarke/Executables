@@ -27,7 +27,7 @@ public class Game {
 
         while(isPlaying) {
             round.printRound();
-            round.playHands();
+            round.playHands(numDecks);
         }
     }
 
@@ -35,6 +35,7 @@ public class Game {
         public Round(int numPlayers){
             for(int i=0; i<numPlayers; i++){
                 players.get(i).addHand(createHand());
+                players.get(i).numHands = players.get(i).numHands + 1;
             }
         }
 
@@ -84,6 +85,7 @@ public class Game {
                         if(shoe.total.size() == 0){
                             shoe.resetDecks(numDecks);
                         }
+                        //players.get(i).hands
                     }
                 }
                 System.out.println("test");
