@@ -53,6 +53,9 @@ public class Hand {
         return total;
     }
 
+    public boolean containsRank(Card c, String rank){
+        return (c.getRankAsString().equals(rank));
+    }
     public void setStartingSize(int startingSize) {
         this.startingSize = startingSize;
     }

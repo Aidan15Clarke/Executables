@@ -21,6 +21,10 @@ public class Game {
         playRound(numDecks, numPlayers+1);
     }
 
+    public Player getPlayer(int n){
+        return players.get(n);
+    }
+
     public void playRound(int numDecks, int numPlayers){
         Round round = new Round(numPlayers);
         boolean isPlaying = true;
@@ -34,8 +38,8 @@ public class Game {
     class Round{
         public Round(int numPlayers){
             for(int i=0; i<numPlayers; i++){
-                players.get(i).addHand(createHand());
-                players.get(i).numHands = players.get(i).numHands + 1;
+                getPlayer(i).addHand(createHand());
+                getPlayer(i).numHands = getPlayer(i).numHands + 1;
             }
         }
 
@@ -85,11 +89,24 @@ public class Game {
                         if(shoe.total.size() == 0){
                             shoe.resetDecks(numDecks);
                         }
-                        //players.get(i).hands
+                        if(players.get(i).numHands > 2){
+
+                        }
                     }
                 }
                 System.out.println("test");
             }
+        }
+
+        public boolean isBust(Player player, int num){
+            for(int i=0; i<players.get(num).hands.size(); i++){
+
+            }
+            return (player.hands.get(num).getHandValue() > 21);
+        }
+
+        public int getAceValue(Player p, int hand){
+            for(int i=0; i<p.hands.get())
         }
     }
 }

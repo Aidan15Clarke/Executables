@@ -18,4 +18,8 @@ public class Player {
             hands.remove(i);
         }
     }
+
+    public Hand getHand(int n){
+        return hands.get(n);
+    }
 }
