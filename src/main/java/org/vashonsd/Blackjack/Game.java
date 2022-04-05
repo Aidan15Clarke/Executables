@@ -39,7 +39,6 @@ public class Game {
         public Round(int numPlayers){
             for(int i=0; i<numPlayers; i++){
                 getPlayer(i).addHand(createHand());
-                getPlayer(i).numHands = getPlayer(i).numHands + 1;
             }
         }
 
@@ -51,7 +50,7 @@ public class Game {
         }
 
         public void printRound(){
-            System.out.println("Dealer:\n" + players.get(0).hands.get(0).getCard(0) + " " + players.get(0).hands.get(0).getCard(1) + "\n");
+            System.out.println("Dealer:\n" + getPlayer(0).getHand(0).getCard(0) + " " + getPlayer(0).getHand(0).getCard(1) + "\n");
 
             for(int i=1; i<players.size(); i++){
                 System.out.print("Player: " + (i) + "\t");
@@ -60,12 +59,12 @@ public class Game {
             System.out.println("");
 
             for(int i=1; i<players.size(); i++){
-                System.out.print(players.get(i).hands.get(0).getCard(0) + " ");
-                System.out.print(players.get(i).hands.get(0).getCard(1));
+                System.out.print(getPlayer(i).getHand(0).getCard(0) + " ");
+                System.out.print(getPlayer(i).getHand(0).getCard(1));
                 System.out.print("   \t");
             }
 
-            System.out.println("\n");
+            System.out.println(getPlayer(0).numHands + "\n");
         }
 
         public void playHands(int numDecks){
@@ -81,7 +80,7 @@ public class Game {
 
                     if(choice == 2){
                         isPlaying = false;
-                        players.get(i).resetHands();
+                        getPlayer(i).resetHands();
                         break;
                     }
 
@@ -89,7 +88,7 @@ public class Game {
                         if(shoe.total.size() == 0){
                             shoe.resetDecks(numDecks);
                         }
-                        if(players.get(i).numHands > 2){
+                        if(getPlayer(i).numHands > 2){
 
                         }
                     }
@@ -97,17 +96,34 @@ public class Game {
                 System.out.println("test");
             }
         }
+    }
 
-        public boolean isBust(Player player, int num){
-            for(int i=0; i<players.get(num).hands.size(); i++){
+    public boolean isBust(Player p, int n){
+        if(containsAce(p, n) != -1){
+            getAceValue(p, n);
+        }
+    }
 
+    public int containsAce(Player p, int n){
+        for(int i=0; i<p.getHand(n).getSize(); i++){
+            if(p.getHand(n).getCard(i).getRankAsString().equals("A")){
+                return i;
             }
-            return (player.hands.get(num).getHandValue() > 21);
         }
+        return -1;
+    }
 
-        public int getAceValue(Player p, int hand){
-            for(int i=0; i<p.hands.get())
+    public int getAceValue(Player p, int hand){
+        int ace = containsAce(p, hand);
+        int totalValue = 0;
+
+        for(int i=0; i<ace; i++){
+            totalValue += p.getHand(hand).getCard(i).getValue();
         }
+        for(int i=ace+1; i<p.getHand(hand).getSize(); i++){
+            totalValue += p.getHand(hand).getCard(i).getValue();
+        }
+        return totalValue;
     }
 }
 

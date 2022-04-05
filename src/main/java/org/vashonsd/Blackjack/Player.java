@@ -11,6 +11,7 @@ public class Player {
 
     public void addHand(Hand hand){
         hands.add(hand);
+        numHands = hands.size();
     }
 
     public void resetHands(){

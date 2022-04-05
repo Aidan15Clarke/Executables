@@ -28,6 +28,10 @@ public class Hand {
         return cards.get(n);
     }
 
+    public int getSize(){
+        return cards.size();
+    }
+
     public void resetHand() {
         cards.removeAll(cards);
     }
