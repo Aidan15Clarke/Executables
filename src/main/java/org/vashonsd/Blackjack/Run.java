@@ -8,4 +8,5 @@ public class Run {
         System.out.println(card.getRankAsString());
         //Game game = new Game(6, 2);
     }
+    //test
 }

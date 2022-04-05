@@ -19,7 +19,7 @@ public class Hand {
     public String toString() {
         return "" + cards;
     }
-
+    //test
     public void addCard(Card c) {
         cards.add(c);
     }

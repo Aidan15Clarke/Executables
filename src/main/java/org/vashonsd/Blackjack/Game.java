@@ -97,7 +97,7 @@ public class Game {
             }
         }
     }
-
+    //test
     public boolean isBust(Player p, int n){
         if(containsAce(p, n) != -1){
             getAceValue(p, n);
