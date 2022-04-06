@@ -16,7 +16,7 @@ public class Shoe {
         addDecks(n);
         resetDecks(n);
     }
-//test
+
     public void resetDecks(int n){
         for(int i = 0; i < deckList.size(); i++){
             for(int j = 0; j < 52; j++){

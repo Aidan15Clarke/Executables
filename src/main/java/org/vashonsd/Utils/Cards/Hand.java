@@ -19,7 +19,7 @@ public class Hand {
     public String toString() {
         return "" + cards;
     }
-    //test
+
     public void addCard(Card c) {
         cards.add(c);
     }
@@ -56,6 +56,12 @@ public class Hand {
         }
         return total;
     }
+
+//    public int indexOfCardbyValue(Card c) {
+//        //Extract the value of c.
+//        //return the index of first instance of that value.
+//        //if not present, return -1.
+//    }
 
     public boolean containsRank(Card c, String rank){
         return (c.getRankAsString().equals(rank));

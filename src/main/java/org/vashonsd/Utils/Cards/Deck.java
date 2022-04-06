@@ -16,7 +16,7 @@ public class Deck
     private static final int ACE = 14;
 
     // Instance variables
-//test
+
     // This stores the deck which is a list of the Card objects.
     private ArrayList<Card> deck;
 

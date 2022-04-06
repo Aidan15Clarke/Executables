@@ -29,10 +29,12 @@ public class Game {
         Round round = new Round(numPlayers);
         boolean isPlaying = true;
 
-        while(isPlaying) {
-            round.printRound();
-            round.playHands(numDecks);
-        }
+        System.out.println("Dealer:\n" + getPlayer(0).getHand(0).getCard(0) + " " + getPlayer(0).getHand(0).getCard(1) + "\n");
+        System.out.println(noAceHandValue(getPlayer(0), 0));
+//        while(isPlaying) {
+//            round.printRound();
+//            round.playHands(numDecks);
+//        }
     }
 
     class Round{
@@ -64,7 +66,7 @@ public class Game {
                 System.out.print("   \t");
             }
 
-            System.out.println(getPlayer(0).numHands + "\n");
+            System.out.println("\n");
         }
 
         public void playHands(int numDecks){
@@ -97,33 +99,51 @@ public class Game {
             }
         }
     }
-    //test
-    public boolean isBust(Player p, int n){
-        if(containsAce(p, n) != -1){
-            getAceValue(p, n);
-        }
-    }
 
-    public int containsAce(Player p, int n){
-        for(int i=0; i<p.getHand(n).getSize(); i++){
-            if(p.getHand(n).getCard(i).getRankAsString().equals("A")){
-                return i;
+//    public boolean isBust(Player p, int n){
+//        if(containsAce(p, n) != -1){
+//            getAceValue(p, n);
+//        }
+//    }
+
+    public ArrayList<Integer> aceIndex(Player p, int hand){
+        ArrayList<Integer> indexes = new ArrayList<>();
+
+        for(int i=0; i<p.getHand(hand).getSize(); i++){
+            if(p.getHand(hand).getCard(i).getRankAsString().equals("A")){
+                indexes.add(i);
             }
         }
-        return -1;
+        return indexes;
     }
 
-    public int getAceValue(Player p, int hand){
-        int ace = containsAce(p, hand);
+//    public int getAceValue(Player p, int hand){
+//        int ace = containsAce(p, hand);
+//        System.out.println("Ace: " + ace);
+//
+//        if(getHandValue(p, hand) > )
+//    }
+
+    public int noAceHandValue(Player p, int hand){
         int totalValue = 0;
 
-        for(int i=0; i<ace; i++){
-            totalValue += p.getHand(hand).getCard(i).getValue();
-        }
-        for(int i=ace+1; i<p.getHand(hand).getSize(); i++){
+        for(int i=0; i<p.getHand(hand).getSize(); i++){
+            if(p.getHand(hand).getCard(i).getRankAsString().equals("A")){
+                continue;
+            }
             totalValue += p.getHand(hand).getCard(i).getValue();
         }
         return totalValue;
+    }
+
+    public int numAces(Player p, int hand){
+        int numAces = 0;
+        for(int i=0; i<p.getHand(hand).getSize(); i++){
+            if(p.getHand(hand).getCard(i).getRankAsString().equals("A")){
+                numAces++;
+            }
+        }
+        return numAces;
     }
 }
 
