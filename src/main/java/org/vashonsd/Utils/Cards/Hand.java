@@ -69,4 +69,8 @@ public class Hand {
     public void setStartingSize(int startingSize) {
         this.startingSize = startingSize;
     }
+
+    public void setValue(Card ace, int value){
+        ace.value = value;
+    }
 }

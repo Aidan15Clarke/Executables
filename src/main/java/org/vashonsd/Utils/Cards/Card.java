@@ -31,7 +31,7 @@ public class Card
     private int suit;
 
     // This represents the value of the card, which is 10 for face cards or 11 for an ace.
-    private int value;
+    public int value;
 
     // This String array allows us to easily get the String value of a Card from its rank.
     // There are two Xs in the front to provide padding so numbers have their String representation
@@ -53,6 +53,11 @@ public class Card
     {
         rank = r;
         suit = s;
+        value = r;
+
+        if(rank == 14){
+            value = 11;
+        }
     }
 
     // Getter Methods
@@ -88,17 +93,9 @@ public class Card
      */
     public int getValue()
     {
-        int value = rank;
-        if(rank > 10)
-        {
+        if(rank > 10 && rank != 14) {
             value = 10;
         }
-
-        if(rank == ACE)
-        {
-            value = 11;
-        }
-
         return value;
     }
 

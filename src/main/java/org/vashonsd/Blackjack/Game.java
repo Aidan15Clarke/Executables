@@ -28,9 +28,9 @@ public class Game {
     public void playRound(int numDecks, int numPlayers){
         Round round = new Round(numPlayers);
         boolean isPlaying = true;
-
         System.out.println("Dealer:\n" + getPlayer(0).getHand(0).getCard(0) + " " + getPlayer(0).getHand(0).getCard(1) + "\n");
-        System.out.println(noAceHandValue(getPlayer(0), 0));
+        System.out.println(getTotalValue(getPlayer(0), 0));
+
 //        while(isPlaying) {
 //            round.printRound();
 //            round.playHands(numDecks);
@@ -117,13 +117,46 @@ public class Game {
         return indexes;
     }
 
-//    public int getAceValue(Player p, int hand){
-//        int ace = containsAce(p, hand);
-//        System.out.println("Ace: " + ace);
-//
-//        if(getHandValue(p, hand) > )
-//    }
+    //This works
+    public int getTotalValue(Player p, int hand){
+        int totalValue = 0;
 
+        if(numAces(p, hand) == 0){
+            totalValue += noAceHandValue(p, hand);
+            return totalValue;
+        }
+
+        setAceValue(p, hand);
+
+        for(int i=0; i<p.getHand(hand).getSize(); i++){
+            totalValue += p.getHand(hand).getCard(i).getValue();
+        }
+        return totalValue;
+    }
+
+    public void setAceValue(Player p, int hand){
+        int aceValue;
+        ArrayList<Integer> indexes = aceIndex(p, hand);
+
+        if(numAces(p, hand) > 1){
+            if(noAceHandValue(p, hand) > 11){
+                for(int i=0; i<indexes.size(); i++){
+                    p.getHand(hand).setValue(p.getHand(hand).getCard(indexes.get(i)), 1);
+                }
+            }
+        }
+
+        else {
+            if (noAceHandValue(p, hand) < 11) {
+                p.getHand(hand).setValue(p.getHand(hand).getCard(indexes.get(0)), 11);
+            } else {
+                p.getHand(hand).setValue(p.getHand(hand).getCard(indexes.get(0)), 1);
+                ;
+            }
+        }
+    }
+
+    //This works
     public int noAceHandValue(Player p, int hand){
         int totalValue = 0;
 
@@ -136,6 +169,7 @@ public class Game {
         return totalValue;
     }
 
+    //This works
     public int numAces(Player p, int hand){
         int numAces = 0;
         for(int i=0; i<p.getHand(hand).getSize(); i++){
