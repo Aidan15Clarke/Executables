@@ -31,10 +31,10 @@ public class Game {
         System.out.println("Dealer:\n" + getPlayer(0).getHand(0).getCard(0) + " " + getPlayer(0).getHand(0).getCard(1) + "\n");
         System.out.println(getTotalValue(getPlayer(0), 0));
 
-//        while(isPlaying) {
-//            round.printRound();
-//            round.playHands(numDecks);
-//        }
+        while(isPlaying) {
+            round.printRound();
+            round.playHands(numDecks);
+        }
     }
 
     class Round{
@@ -51,6 +51,10 @@ public class Game {
             return hand;
         }
 
+        public void dealToHand(Player p, int hand){
+            p.getHand(hand).addCard(shoe.deal());
+        }
+
         public void printRound(){
             System.out.println("Dealer:\n" + getPlayer(0).getHand(0).getCard(0) + " " + getPlayer(0).getHand(0).getCard(1) + "\n");
 
@@ -61,11 +65,12 @@ public class Game {
             System.out.println("");
 
             for(int i=1; i<players.size(); i++){
-                System.out.print(getPlayer(i).getHand(0).getCard(0) + " ");
-                System.out.print(getPlayer(i).getHand(0).getCard(1));
+                Hand theHand = getPlayer(i).getHand(0);
+                for(int j=0; j<theHand.getSize(); j++){
+                    System.out.print(theHand.getCard(j) + " ");
+                }
                 System.out.print("   \t");
             }
-
             System.out.println("\n");
         }
 
@@ -90,9 +95,14 @@ public class Game {
                         if(shoe.total.size() == 0){
                             shoe.resetDecks(numDecks);
                         }
-                        if(getPlayer(i).numHands > 2){
 
-                        }
+                        dealToHand(getPlayer(i), 0);
+                        printRound();
+
+                        System.out.println(getTotalValue(getPlayer(1), 0));
+//                        if(getPlayer(i).numHands > 2){
+//
+//                        }
                     }
                 }
                 System.out.println("test");
@@ -105,17 +115,6 @@ public class Game {
 //            getAceValue(p, n);
 //        }
 //    }
-
-    public ArrayList<Integer> aceIndex(Player p, int hand){
-        ArrayList<Integer> indexes = new ArrayList<>();
-
-        for(int i=0; i<p.getHand(hand).getSize(); i++){
-            if(p.getHand(hand).getCard(i).getRankAsString().equals("A")){
-                indexes.add(i);
-            }
-        }
-        return indexes;
-    }
 
     //This works
     public int getTotalValue(Player p, int hand){
@@ -134,28 +133,6 @@ public class Game {
         return totalValue;
     }
 
-    public void setAceValue(Player p, int hand){
-        int aceValue;
-        ArrayList<Integer> indexes = aceIndex(p, hand);
-
-        if(numAces(p, hand) > 1){
-            if(noAceHandValue(p, hand) > 11){
-                for(int i=0; i<indexes.size(); i++){
-                    p.getHand(hand).setValue(p.getHand(hand).getCard(indexes.get(i)), 1);
-                }
-            }
-        }
-
-        else {
-            if (noAceHandValue(p, hand) < 11) {
-                p.getHand(hand).setValue(p.getHand(hand).getCard(indexes.get(0)), 11);
-            } else {
-                p.getHand(hand).setValue(p.getHand(hand).getCard(indexes.get(0)), 1);
-                ;
-            }
-        }
-    }
-
     //This works
     public int noAceHandValue(Player p, int hand){
         int totalValue = 0;
@@ -167,6 +144,47 @@ public class Game {
             totalValue += p.getHand(hand).getCard(i).getValue();
         }
         return totalValue;
+    }
+
+    //This works
+    public void setAceValue(Player p, int hand){
+        ArrayList<Integer> indexes = aceIndex(p, hand);
+
+        if(numAces(p, hand) > 1){
+            if(noAceHandValue(p, hand) > 11){
+                for(int i=0; i<indexes.size(); i++){
+                    p.getHand(hand).setValue(p.getHand(hand).getCard(indexes.get(i)), 1);
+                }
+            }
+            if(noAceHandValue(p, hand) < 11){
+                p.getHand(hand).setValue(p.getHand(hand).getCard(indexes.get(0)), 11);
+                if(noAceHandValue(p, hand) + p.getHand(hand).getCard(indexes.get(0)).getValue() < 21){
+                    for(int i=1; i<indexes.size(); i++){
+                        p.getHand(hand).setValue(p.getHand(hand).getCard(indexes.get(i)), 1);
+                    }
+                }
+            }
+        }
+
+        else {
+            if (noAceHandValue(p, hand) < 11) {
+                p.getHand(hand).setValue(p.getHand(hand).getCard(indexes.get(0)), 11);
+            } else {
+                p.getHand(hand).setValue(p.getHand(hand).getCard(indexes.get(0)), 1);
+            }
+        }
+    }
+
+    //This works
+    public ArrayList<Integer> aceIndex(Player p, int hand){
+        ArrayList<Integer> indexes = new ArrayList<>();
+
+        for(int i=0; i<p.getHand(hand).getSize(); i++){
+            if(p.getHand(hand).getCard(i).getRankAsString().equals("A")){
+                indexes.add(i);
+            }
+        }
+        return indexes;
     }
 
     //This works

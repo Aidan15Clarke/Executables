@@ -16,11 +16,5 @@ public class GameTest extends TestCase {
     }
 
     public void testGetAceValue() {
-        Hand hand = new Hand(11, 2);
-        hand.addCard(new Card(14, 1));
-        hand.addCard(new Card(10, 1));
-        p.addHand(hand);
-
-        System.out.println(g.noAceHandValue(p, 0));
     }
 }
