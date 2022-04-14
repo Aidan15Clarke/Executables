@@ -15,9 +15,11 @@ public class Player {
     }
 
     public void resetHands(){
-        for(int i=0; i<hands.size(); i++){
-            hands.remove(i);
-        }
+        hands.clear();
+    }
+
+    public void resetHand(int num){
+        hands.remove(num);
     }
 
     public Hand getHand(int n){

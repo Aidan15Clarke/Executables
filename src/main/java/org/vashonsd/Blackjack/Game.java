@@ -1,8 +1,10 @@
 package org.vashonsd.Blackjack;
 
+import org.vashonsd.Utils.Cards.Card;
 import org.vashonsd.Utils.Cards.Hand;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Scanner;
 
@@ -28,12 +30,9 @@ public class Game {
     public void playRound(int numDecks, int numPlayers){
         Round round = new Round(numPlayers);
         boolean isPlaying = true;
-        System.out.println("Dealer:\n" + getPlayer(0).getHand(0).getCard(0) + " " + getPlayer(0).getHand(0).getCard(1) + "\n");
-        System.out.println(getTotalValue(getPlayer(0), 0));
 
         while(isPlaying) {
-            round.printRound();
-            round.playHands(numDecks);
+            isPlaying = round.playHands(numDecks);
         }
     }
 
@@ -51,70 +50,105 @@ public class Game {
             return hand;
         }
 
-        public void dealToHand(Player p, int hand){
+        public void dealToHand(Player p, int hand, int numDecks){
+            if(shoe.total.size() == 0){
+                shoe.resetDecks(numDecks);
+            }
+
             p.getHand(hand).addCard(shoe.deal());
         }
 
-        public void printRound(){
-            System.out.println("Dealer:\n" + getPlayer(0).getHand(0).getCard(0) + " " + getPlayer(0).getHand(0).getCard(1) + "\n");
-
-            for(int i=1; i<players.size(); i++){
-                System.out.print("Player: " + (i) + "\t");
-            }
-
-            System.out.println("");
-
-            for(int i=1; i<players.size(); i++){
-                Hand theHand = getPlayer(i).getHand(0);
-                for(int j=0; j<theHand.getSize(); j++){
-                    System.out.print(theHand.getCard(j) + " ");
-                }
-                System.out.print("   \t");
-            }
-            System.out.println("\n");
-        }
-
-        public void playHands(int numDecks){
+        public boolean playHands(int numDecks){
             Scanner input = new Scanner(System.in);
-            boolean isPlaying;
+            int currentHand;
 
             for(int i=1; i<players.size(); i++){
-                isPlaying = true;
-                while(isPlaying) {
-                    System.out.println("Player " + i + ":");
+                for(int j=getPlayer(i).numHands-1; j>-1; j--) {
+                    currentHand = j;
+
+                    printRound();
+                    System.out.println("Player " + i + ": " + Arrays.toString(new Hand[]{getPlayer(i).getHand(currentHand)}));
                     System.out.println("1) Hit 2) Stand 3) Double 4) Split");
+
                     int choice = input.nextInt();
 
                     if(choice == 2){
-                        isPlaying = false;
-                        getPlayer(i).resetHands();
-                        break;
+                        printRound();
+                        continue;
                     }
 
                     if(choice == 1){
-                        if(shoe.total.size() == 0){
-                            shoe.resetDecks(numDecks);
+                        dealToHand(getPlayer(i), currentHand, numDecks);
+
+                        if(isBust(getPlayer(i), currentHand)){
+                            continue;
                         }
+                    }
 
-                        dealToHand(getPlayer(i), 0);
-                        printRound();
+                    if(choice == 3){
+                        dealToHand(getPlayer(i), currentHand, numDecks);
+                        continue;
+                    }
 
-                        System.out.println(getTotalValue(getPlayer(1), 0));
-//                        if(getPlayer(i).numHands > 2){
-//
-//                        }
+                    if(choice == 4){
+                        Card temp = getPlayer(i).getHand(currentHand).getCard(0);
+
+                        if(getPlayer(i).getHand(currentHand).getCard(0).getValue() == getPlayer(i).getHand(currentHand).getCard(1).getValue()
+                                || getPlayer(i).getHand(currentHand).getCard(0).getRankAsString().equals(getPlayer(i).getHand(currentHand).getCard(1).getRankAsString())){
+                            if(getPlayer(i).numHands>1){
+                                getPlayer(i).resetHand(currentHand);
+                            } else{
+                                getPlayer(i).resetHands();
+                            }
+
+                            Hand handOne = new Hand(11, 2);
+                            Hand handTwo = new Hand(11, 2);
+
+                            handOne.addCard(temp);
+                            handOne.addCard(shoe.deal());
+                            handTwo.addCard(temp);
+                            handTwo.addCard(shoe.deal());
+
+                            getPlayer(i).addHand(handOne);
+                            getPlayer(i).addHand(handTwo);
+
+                            j=getPlayer(i).numHands;
+                        } else{
+                            j++;
+                            continue;
+                        }
                     }
                 }
-                System.out.println("test");
             }
+            printRound();
+            return false;
+        }
+        public void printRound(){
+            System.out.println("Dealer:   " + Arrays.toString(getPlayer(0).hands.toArray()) + " " + getTotalValue(getPlayer(0), 0));
+
+            for(int i=1; i<players.size(); i++){
+                System.out.print("Player " + (i) + ": ");
+                System.out.print(Arrays.toString(getPlayer(i).hands.toArray()) + " ");
+
+                if(getPlayer(i).numHands > 1){
+                    for(int j=0; j<getPlayer(i).numHands; j++){
+                        System.out.print(getTotalValue(getPlayer(i), j) + " ");
+                    }
+                } else{
+                    System.out.print(getTotalValue(getPlayer(i), 0));
+                }
+                System.out.println("");
+            }
+            System.out.println("");
         }
     }
 
-//    public boolean isBust(Player p, int n){
-//        if(containsAce(p, n) != -1){
-//            getAceValue(p, n);
-//        }
-//    }
+    public boolean isBust(Player p, int hand){
+        if(getTotalValue(p, hand) > 21){
+            return true;
+        }
+        return false;
+    }
 
     //This works
     public int getTotalValue(Player p, int hand){
