@@ -86,6 +86,10 @@ public class Simulator {
                 for (int j = getPlayer(i).numHands - 1; j > -1; j--) {
                     currentHand = j;
 
+                    if(getPlayer(i).getHand(currentHand).getCard(0).getRankAsString().equals("A") && getPlayer(i).getHand(currentHand).getCard(1).getRankAsString().equals("A")){
+                        System.out.println("Pair of Aces");
+                    }
+
                     //Gets dealerIndex for dealer's up-card
                     for (int k = 0; k < 11; k++) {
                         if (String.valueOf(getPlayer(0).getHand(0).getCard(0).getValue()).equals(strategy.get(0).get(k).toString())
@@ -94,35 +98,20 @@ public class Simulator {
                         }
                     }
 
-                    //Gets playerChoice for a hard 17
-                    if (getTotalValue(getPlayer(i), currentHand) >= 17 && noAceHandValue(getPlayer(i), currentHand) >= 11) {
-                        if((getPlayer(i).getHand(currentHand).getCard(0).getValue() == getPlayer(i).getHand(currentHand).getCard(1).getValue()
-                                || getPlayer(i).getHand(currentHand).getCard(0).getRankAsString().equals(getPlayer(i).getHand(currentHand).getCard(1).getRankAsString()))){
-                            for (int k = 0; k < getPlayer(i).getHand(currentHand).getSize(); k++) {
-                                temp += String.valueOf(getPlayer(i).getHand(currentHand).getCard(k).getValue());
-                            }
-
-                            for (int k = 0; k < strategy.size(); k++) {
-                                if (temp.equals(strategy.get(k).get(0).toString())) {
-                                    playerIndex = k;
-                                }
-                            }
-                        }
-                        else{
-                            playerChoice = "S";
-                        }
+                    //Gets playerChoice for a hard 17 or higher
+                    if (getTotalValue(getPlayer(i), currentHand) >= 17 && noAceHandValue(getPlayer(i), currentHand) >= 11 &&
+                            (getPlayer(i).getHand(currentHand).getSize() > 2 || !(isPair(getPlayer(i), currentHand)))) {
+                        playerChoice = "S";
                     }
 
+                    //Gets playerChoice for a hard total under 17
                     else if(getTotalValue(getPlayer(i), currentHand) <= 8
-                            && !(getPlayer(i).getHand(currentHand).getCard(0).getValue() == getPlayer(i).getHand(currentHand).getCard(1).getValue()
-                            || getPlayer(i).getHand(currentHand).getCard(0).getRankAsString().equals(getPlayer(i).getHand(currentHand).getCard(1).getRankAsString()))){
+                            && !(isPair(getPlayer(i), currentHand))) {
                         playerChoice = "H";
                     }
 
                     //Gets playerIndex if player has a pair
-                    else if (getPlayer(i).getHand(currentHand).getCard(0).getValue() == getPlayer(i).getHand(currentHand).getCard(1).getValue()
-                            || getPlayer(i).getHand(currentHand).getCard(0).getRankAsString().equals(getPlayer(i).getHand(currentHand).getCard(1).getRankAsString())) {
-
+                    else if (isPair(getPlayer(i), currentHand)) {
                         for (int k = 0; k < getPlayer(i).getHand(currentHand).getSize(); k++) {
                             temp += String.valueOf(getPlayer(i).getHand(currentHand).getCard(k).getValue());
                         }
@@ -194,9 +183,9 @@ public class Simulator {
 
                     String playChoice = playChoice(playerIndex, dealerIndex);
                     if(!(playerChoice.equals(""))){
-                        if (playChoice.equals("S")) {
+                        if (playerChoice.equals("S")) {
                             continue;
-                        } else if (playChoice.equals("H")) {
+                        } else if (playerChoice.equals("H")) {
                             dealToHand(getPlayer(i), currentHand, numDecks);
                             if (isBust(getPlayer(i), currentHand)) {
                                 continue;
@@ -217,8 +206,10 @@ public class Simulator {
                         continue;
                     } else if (playChoice.equals("D") || playChoice.equals("DS")) {
                         dealToHand(getPlayer(i), currentHand, numDecks);
+                        System.out.println("Double");
                         continue;
                     } else if (playChoice.equals("Y") || playChoice.equals("YN")) {
+                        System.out.println("Split");
                         Card tempCard = getPlayer(i).getHand(currentHand).getCard(0);
 
                         if (getPlayer(i).getHand(currentHand).getCard(0).getValue() == getPlayer(i).getHand(currentHand).getCard(1).getValue()
@@ -260,6 +251,7 @@ public class Simulator {
                             continue;
                         } else if(playChoice.equals("D") || playChoice.equals("DS")){
                             dealToHand(getPlayer(i), currentHand, numDecks);
+                            System.out.println("Double");
                             continue;
                         }
                     }
@@ -279,6 +271,11 @@ public class Simulator {
                 System.out.println(Arrays.toString(getPlayer(i).hands.toArray()));
             }
             System.out.println("");
+        }
+
+        public boolean isPair(Player p, int n){
+            return p.getHand(n).getCard(0).getValue() == p.getHand(n).getCard(1).getValue()
+                    || p.getHand(n).getCard(0).getRankAsString().equals(p.getHand(n).getCard(1).getRankAsString());
         }
 
         public String playChoice(int playerIndex, int dealerIndex) {

@@ -66,7 +66,7 @@ public class SheetsAndJava {
 
         List<List<Object>> values = response.getValues();
 
-        Simulator sim = new Simulator(6, 1, values, 5);
+        Simulator sim = new Simulator(6, 1, values, 50);
 
         //Print values
 //        if(values == null || values.isEmpty()) {
