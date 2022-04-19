@@ -8,6 +8,8 @@ import java.util.List;
 public class Player {
     List<Hand> hands = new ArrayList<>();
     int numHands = 0;
+    int bankRoll = 10000;
+    int bettingUnit = bankRoll/500;
 
     public void addHand(Hand hand){
         hands.add(hand);

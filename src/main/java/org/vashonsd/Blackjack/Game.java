@@ -28,12 +28,16 @@ public class Game {
     }
 
     public void playRound(int numDecks, int numPlayers){
-        Round round = new Round(numPlayers);
-        boolean isPlaying = true;
+        Round round = resetRound(numPlayers);
 
-        while(isPlaying) {
-            isPlaying = round.playHands(numDecks);
+        for(int i=0; i<100; i++) {
+            round.playHands(numDecks);
+            round = resetRound(numPlayers);
         }
+    }
+
+    public Round resetRound(int numPlayers){
+        return new Round(numPlayers);
     }
 
     class Round{
@@ -43,6 +47,7 @@ public class Game {
             }
         }
 
+        //Creates a fresh hand
         public Hand createHand(){
             Hand hand = new Hand(11, 2);
             hand.addCard(shoe.deal());
@@ -58,7 +63,7 @@ public class Game {
             p.getHand(hand).addCard(shoe.deal());
         }
 
-        public boolean playHands(int numDecks){
+        public void playHands(int numDecks){
             Scanner input = new Scanner(System.in);
             int currentHand;
 
@@ -67,22 +72,23 @@ public class Game {
                     currentHand = j;
 
                     printRound();
-                    System.out.println("Player " + i + ": " + Arrays.toString(new Hand[]{getPlayer(i).getHand(currentHand)}));
+                    System.out.println("Player " + i + ": " + Arrays.toString(new Hand[]{getPlayer(i).getHand(currentHand)}) + " " + getTotalValue(getPlayer(i), currentHand));
                     System.out.println("1) Hit 2) Stand 3) Double 4) Split");
 
                     int choice = input.nextInt();
+                    System.out.println("");
 
                     if(choice == 2){
-                        printRound();
                         continue;
                     }
 
                     if(choice == 1){
                         dealToHand(getPlayer(i), currentHand, numDecks);
-
                         if(isBust(getPlayer(i), currentHand)){
                             continue;
                         }
+                        i--;
+                        continue;
                     }
 
                     if(choice == 3){
@@ -121,10 +127,46 @@ public class Game {
                 }
             }
             printRound();
-            return false;
+
+            //Dealer plays
+            boolean belowSeventeen = getTotalValue(getPlayer(0), 0) < 17;
+
+            while(belowSeventeen){
+                getPlayer(0).getHand(0).addCard(shoe.deal());
+                belowSeventeen = getTotalValue(getPlayer(0), 0) < 17;
+                printRound();
+            }
+
+            //Sets winCondition for each player
+            for(int i=1; i<players.size(); i++){
+                for(int j=getPlayer(i).numHands-1; j>-1; j--) {
+                    if (isBust(getPlayer(0), 0) && getPlayer(i).getHand(j).getWinCondition().equals("win")) {
+                        continue;
+                    } else if (getTotalValue(getPlayer(0), 0) > getTotalValue(getPlayer(i), j)) {
+                        getPlayer(i).getHand(j).setWinCondition("lose");
+                    } else if (getTotalValue(getPlayer(0), 0) == getTotalValue(getPlayer(i), j)){
+                        getPlayer(i).getHand(j).setWinCondition("push");
+                    }
+                }
+            }
+
+            for(int i=1; i<players.size(); i++){
+                System.out.println("Player " + i + ": ");
+                for(int j=0; j<getPlayer(i).numHands; j++){
+                    System.out.println("\tHand " + (j+1) + " " + getPlayer(i).getHand(j).getWinCondition());
+                }
+            }
+
+            for(int i=0; i<players.size(); i++){
+                getPlayer(i).resetHands();
+            }
+
+            System.out.println("");
         }
+
+        //Prints/Updates each Round/Play
         public void printRound(){
-            System.out.println("Dealer:   " + Arrays.toString(getPlayer(0).hands.toArray()) + " " + getTotalValue(getPlayer(0), 0));
+            System.out.println("Dealer:   " + "[[" + getPlayer(0).getHand(0).getCard(0) + ", X]] " + Arrays.toString(getPlayer(0).hands.toArray()) + " " + getTotalValue(getPlayer(0), 0));
 
             for(int i=1; i<players.size(); i++){
                 System.out.print("Player " + (i) + ": ");
@@ -143,14 +185,16 @@ public class Game {
         }
     }
 
+    //Checks whether a players hand is over 21
     public boolean isBust(Player p, int hand){
         if(getTotalValue(p, hand) > 21){
+            p.getHand(hand).setWinCondition("lose");
             return true;
         }
         return false;
     }
 
-    //This works
+    //Gets the total value of a players hand
     public int getTotalValue(Player p, int hand){
         int totalValue = 0;
 
@@ -167,7 +211,7 @@ public class Game {
         return totalValue;
     }
 
-    //This works
+    //Gets the value of a players hand not including Aces
     public int noAceHandValue(Player p, int hand){
         int totalValue = 0;
 
@@ -180,7 +224,7 @@ public class Game {
         return totalValue;
     }
 
-    //This works
+    //Determines and sets the value of each Ace in a players hand
     public void setAceValue(Player p, int hand){
         ArrayList<Integer> indexes = aceIndex(p, hand);
 
@@ -198,9 +242,7 @@ public class Game {
                     }
                 }
             }
-        }
-
-        else {
+        } else {
             if (noAceHandValue(p, hand) < 11) {
                 p.getHand(hand).setValue(p.getHand(hand).getCard(indexes.get(0)), 11);
             } else {
@@ -209,7 +251,7 @@ public class Game {
         }
     }
 
-    //This works
+    //Returns a List of Integers of the Indexes of Aces in a players hand
     public ArrayList<Integer> aceIndex(Player p, int hand){
         ArrayList<Integer> indexes = new ArrayList<>();
 
@@ -221,7 +263,7 @@ public class Game {
         return indexes;
     }
 
-    //This works
+    //Returns the number of Aces in a players hand
     public int numAces(Player p, int hand){
         int numAces = 0;
         for(int i=0; i<p.getHand(hand).getSize(); i++){
@@ -232,4 +274,3 @@ public class Game {
         return numAces;
     }
 }
-

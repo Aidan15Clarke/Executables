@@ -7,12 +7,21 @@ public class Hand {
 
     int capacity;
     int startingSize;
+    String winCondition = "win";
 
     List<Card> cards = new ArrayList<>();
 
     public Hand(int capacity, int startingSize) {
         this.capacity = capacity;
         this.startingSize = startingSize;
+    }
+
+    public void setWinCondition(String s){
+        winCondition = s;
+    }
+
+    public String getWinCondition(){
+        return winCondition;
     }
 
     @Override
